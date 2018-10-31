@@ -1,6 +1,7 @@
 #include<cmath>
 #include<iostream>
 #include<vector>
+#include<list>
 
 const double NA = 6.022140857 * pow(10, 23);
 const double Vm = 22.414;
@@ -30,6 +31,7 @@ public:
 
 class Compound {
 private:
+	std::vector<Element> components;
 	double n = 1;
 	double m = 0;
 	double Mr = 0;
@@ -45,43 +47,45 @@ public:
 	///////////////////////////////////////////
 	void Set_n(int n) { this->n = n; this->m = this->Mr*this->n; }
 	void Set_m(int m) { this->m = m; this->n = this->m / this->Mr; }
-
-
-
-
-
-
 	///////////////////////////////////////////
 private:
-	void calculate_DO_NOT_TOUCH(){}
-public:
-	///////////////////////////////////////////
-	Compound(std::vector<Element> &elements) {
-
+	/*void calculate_DO_NOT_TOUCH(std::vector<Element> &elements) {
 		for (int i = 0; i < elements.size(); i++)
 		{
 			this->Mr += elements[i].Get_Ar() * elements[i].Get_Amount();
 			this->OxidationState += elements[i].OxidationState * elements[i].Get_Amount();
 			this->m += elements[i].Get_Ar() * elements[i].Get_Amount();
 
+		}	this->n = this->m / this->Mr;
+	}*/
+
+	void calculate_DO_NOT_TOUCH(std::initializer_list<Element> &elements) {
+		for (auto element : elements) {
+			this->Mr += element.Get_Ar()*element.Get_Amount();
+			this->OxidationState += element.OxidationState*element.Get_Amount();
+			this->m += element.Get_Ar()*element.Get_Amount();
 		}
-		this->n = this->m / this->Mr;
 	}
+public:
+	///////////////////////////////////////////
+
+	Compound(std::initializer_list<Element>elements) {
+		this->calculate_DO_NOT_TOUCH(elements);
+		for (auto element : elements) { this->components.push_back(element); }
+	}
+	void Add(std::initializer_list<Element>elements_to_add) {
+		this->calculate_DO_NOT_TOUCH(elements_to_add);
+		for (auto element : elements_to_add) { this->components.push_back(element); }
+	}
+
 };
 
 
 
 
 int main() {
-	std::vector<Element> toMethane;
 	Element C(6, 12, -4);
-	Element H(1, 1, +1, 4);
-	toMethane.push_back(C);
-	toMethane.push_back(H);
-	Compound Methane(toMethane);
-	std::cout << Methane.Get_m() << std::endl;
-	Methane.Set_m(32);
-	std::cout << Methane.Get_n() << std::endl;
+	Element H(1, 1, +1, 3);
 
 	system("pause");
 	return 0;

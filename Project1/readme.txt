@@ -1,1 +1,3 @@
-v 0.1alpha beta gamma
+v 0.11alpha beta gamma
+test branch
+compound constructor upd
